@@ -2,9 +2,23 @@
 package main
 
 import (
-	"fmt"
+	"flag"
+	"log"
+	"net/http"
 )
 
+func home(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Welome to journalit!"))
+}
+
 func main() {
-	fmt.Println("Welcome to journalit!")
+	// Configure server using command line arguments
+	address := flag.String("addr", ":4000", "address of server")
+	flag.Parse()
+	router := http.NewServeMux()
+	router.HandleFunc("/", home)
+	log.Printf("starting server on %s", *address)
+	err := http.ListenAndServe(*address, router)
+	// We will only get here when the server stops (crashes)
+	log.Fatal(err)
 }
